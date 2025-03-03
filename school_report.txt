@@ -1,0 +1,7 @@
+=== SCHOOL PERFORMANCE REPORT ===
+Generated on: 2025-03-03T23:08:31.508660800
+
+Class: CL001 | Teacher: teacher1
+Class Average Score: 85.00
+Tuition Collected: $0.00
+Class Attendance Rate: 100%
