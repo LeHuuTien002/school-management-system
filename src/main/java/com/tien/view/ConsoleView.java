@@ -5,10 +5,7 @@ import com.tien.model.*;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Comparator;
+import java.util.*;
 
 public class ConsoleView {
     private Scanner scanner;
@@ -122,7 +119,27 @@ public class ConsoleView {
         }
     }
 
-    public void displayUserList(HashMap<String, User> users) {
+    public void displayEvents(List<Event> events) {
+        System.out.println("\n=== SCHOOL EVENTS ===");
+        System.out.println("| Event ID  | Name                 | Start Time         | Description                    |");
+        System.out.println("|-----------|----------------------|--------------------|--------------------------------|");
+        events.stream()
+                .sorted(Comparator.comparing(Event::getStartTime))
+                .forEach(System.out::println);
+    }
+
+    public void displayDocuments(List<Document> documents, String userId, boolean canUpload) {
+        System.out.println("\n=== DOCUMENTS ===");
+        System.out.println("| Doc ID    | Title                | Uploader   | File Name            |");
+        System.out.println("|-----------|----------------------|------------|----------------------|");
+        documents.forEach(d -> {
+            if (canUpload || d.getUploaderId().equals(userId)) {
+                System.out.println(d);
+            }
+        });
+    }
+
+    public void displayUserList(TreeMap<String, User> users) {
         if (users.isEmpty()) {
             System.out.println("No users in the system!");
             return;
@@ -153,7 +170,11 @@ public class ConsoleView {
         System.out.println("14. View schedule");
         System.out.println("15. Generate report (Admin)");
         System.out.println("16. List users (Admin)");
-        System.out.println("17. Logout");
+        System.out.println("17. Add event (Admin)");
+        System.out.println("18. View events");
+        System.out.println("19. Upload document");
+        System.out.println("20. View documents");
+        System.out.println("21. Logout");
         System.out.print("Enter your choice: ");
     }
 }

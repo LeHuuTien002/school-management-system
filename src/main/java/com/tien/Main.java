@@ -33,7 +33,11 @@ public class Main {
                     case 14: controller.viewSchedule(); break;
                     case 15: controller.generateReport(); break;
                     case 16: controller.listUsers(); break;
-                    case 17:
+                    case 17: controller.addEvent(); break;
+                    case 18: controller.viewEvents(); break;
+                    case 19: controller.uploadDocument();break;
+                    case 20: controller.viewDocuments();break;
+                    case 21:
                         controller.saveData();
                         view.displayMessage("Logged out!");
                         return;

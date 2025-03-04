@@ -12,11 +12,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class SchoolController implements Serializable {
     private static final long serialVersionUID = 1L;
-    public HashMap<String, User> users;
+    public TreeMap<String, User> users;
     public HashMap<String, Student> students;
     public HashMap<String, Subject> subjects;
     public HashMap<String, String> classes;
@@ -24,6 +25,8 @@ public class SchoolController implements Serializable {
     public List<Schedule> schedules;
     public List<Tuition> tuitions;
     public List<Attendance> attendances;
+    public List<Event> events;
+    public List<Document> documents;
     private User currentUser;
     private InMemoryDB db;
     private transient ConsoleView view;
@@ -37,7 +40,7 @@ public class SchoolController implements Serializable {
     }
 
     private void initializeEmptyData() {
-        users = new HashMap<>();
+        users = new TreeMap<>();
         students = new HashMap<>();
         subjects = new HashMap<>();
         classes = new HashMap<>();
@@ -45,6 +48,8 @@ public class SchoolController implements Serializable {
         schedules = new ArrayList<>();
         tuitions = new ArrayList<>();
         attendances = new ArrayList<>();
+        events = new ArrayList<>();
+        documents = new ArrayList<>();
     }
 
     private void initDefaultUser() {
@@ -67,6 +72,8 @@ public class SchoolController implements Serializable {
                 this.schedules = loaded.schedules;
                 this.tuitions = loaded.tuitions;
                 this.attendances = loaded.attendances;
+                this.events = loaded.events;
+                this.documents = loaded.documents;
                 view.displayMessage("Data loaded successfully: " + users.size() + " users, " +
                         students.size() + " students. Users: " + users.keySet());
             } catch (IOException | ClassNotFoundException e) {
@@ -347,6 +354,43 @@ public class SchoolController implements Serializable {
     public void generateReport() {
         checkPermission(UserRole.ADMIN);
         view.generateReport(classes, grades, tuitions, attendances, students);
+    }
+
+    public void addEvent() {
+        checkPermission(UserRole.ADMIN);
+        String eventId = view.getInput("Enter event ID: ");
+        if (events.stream().anyMatch(e -> e.getEventId().equals(eventId))) {
+            view.displayMessage("Event ID already exists!");
+            return;
+        }
+        String name = view.getInput("Enter event name: ");
+        LocalDateTime startTime = LocalDateTime.parse(view.getInput("Enter start time (YYYY-MM-DD HH:MM): "),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        String description = view.getInput("Enter description: ");
+        events.add(new Event(eventId, name, startTime, description));
+        users.values().forEach(u -> u.addNotification("New event: " + name + " at " + startTime));
+        view.displayMessage("Event added successfully!");
+    }
+
+    public void viewEvents() {
+        view.displayEvents(events);
+    }
+
+    public void uploadDocument() {
+        String docId = view.getInput("Enter document ID: ");
+        if (documents.stream().anyMatch(d -> d.getDocId().equals(docId))) {
+            view.displayMessage("Document ID already exists!");
+            return;
+        }
+        String title = view.getInput("Enter document title: ");
+        String fileName = view.getInput("Enter file name (simulated): ");
+        documents.add(new Document(docId, title, currentUser.getUsername(), fileName));
+        view.displayMessage("Document uploaded successfully!");
+    }
+
+    public void viewDocuments() {
+        view.displayDocuments(documents, currentUser.getUsername(),
+                currentUser.getRole() == UserRole.STUDENT || currentUser.getRole() == UserRole.TEACHER);
     }
 
     private void checkPermission(UserRole requiredRole) {

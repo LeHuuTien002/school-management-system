@@ -7,10 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 public class InMemoryDB implements Serializable {
     private static final long serialVersionUID = 1L;
-    private HashMap<String, User> users = new HashMap<>();
+    private TreeMap<String, User> users = new TreeMap<>();
     private HashMap<String, Student> students = new HashMap<>();
     private HashMap<String, Subject> subjects = new HashMap<>();
     private HashMap<String, String> classes = new HashMap<>();
@@ -30,7 +31,7 @@ public class InMemoryDB implements Serializable {
         sms.attendances = attendances;
     }
     
-    public HashMap<String, User> getUsers() { return users; }
+    public TreeMap<String, User> getUsers() { return users; }
     public HashMap<String, Student> getStudents() { return students; }
     public HashMap<String, Subject> getSubjects() { return subjects; }
     public HashMap<String, String> getClasses() { return classes; }
